@@ -1,0 +1,130 @@
+{
+  "name": "Weather Update Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "badedde4-29d5-444c-9d8f-32e3bc639f97",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://api.openweathermap.org/data/2.5/weather?q=Accra&APPID=e64c11b1407b68dd7bc543ffeedf8ad2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9c2b862a-0110-4119-9a02-255b7f91bff3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c012d980-afdd-4b1e-ad56-bafc0d3cc8bc",
+              "name": "message",
+              "value": "=Weather in {{$json[\"name\"]}}: {{$json[\"weather\"][0][\"description\"]}}, Temp: {{$json[\"main\"][\"temp\"]}}°C, Humidity: {{$json[\"main\"][\"humidity\"]}}%",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "5d805191-fe6e-4d8c-b4e6-602a154cde20",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "671874952",
+        "text": "={{$json[\"message\"]}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "88fefca4-12a6-44bd-9c34-c03b1a9b891c",
+      "name": "Send a text message",
+      "webhookId": "f1403073-cabe-465d-b335-e8ec50ae6e69",
+      "credentials": {
+        "telegramApi": {
+          "id": "pBRVoYOmrm8nXmEW",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3da8282b-e048-4e7d-98dc-e770f028383b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22a10f5ad1f0ff908b52b3d11d33d2ecba07524cabbe597a0ed7e577af00ae7a"
+  },
+  "id": "XWDZALuJCW4IOEOa",
+  "tags": []
+}
