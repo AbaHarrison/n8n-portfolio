@@ -31,5 +31,5 @@ EXPOSE 5678
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:5678/healthz || exit 1
 
-# Start n8n
-CMD ["n8n", "start"]
+# Use the default entrypoint from the base image
+# The n8n image already knows how to start itself
